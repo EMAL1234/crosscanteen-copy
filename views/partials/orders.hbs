@@ -1,0 +1,33 @@
+<section>
+    <div class="container">
+        <table class="table mt-5">
+            <thead>
+                <tr>
+                    <th>date</th>
+                     <th>TotalAmount</th>
+                     <th>PaymentMethod</th>
+                      
+
+                </tr>
+            </thead>
+            <tbody>
+
+                {{#each orders}}
+                <tr>
+                     <td>{{this.date}}</td>
+                     <td>{{this.totalAmount}}</td>
+                     <td>{{this.paymentMethod}}</td>
+                     {{!-- <td>
+                        <a href="/view-order-products/{{this.id}}" class="btn btn-primary">products</a>
+                     </td> --}}
+                    
+                </tr>
+                {{/each}}
+            </tbody>
+
+        </table>
+         <hr>
+         {{!-- <h3 class="float-right mr-5 mt-4">Total: RS.<span id="total">{{totalValue}}</span></h3> --}}
+         <a href="/" class="float-right btn btn-success mt-5 mr-30">Continue Shopping</a>
+    </div>
+</section>

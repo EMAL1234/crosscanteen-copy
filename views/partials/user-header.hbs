@@ -38,6 +38,11 @@
       </li> --}}
     </ul>
    <a class="btn btn-primary" href="/login" role="button">Login</a>
+   {{#if user}}
+   {{user.Name}}
+   {{else}}
+   login
+   {{/if}}
   </div>
 </nav>
     </header>

@@ -1,0 +1,79 @@
+<section>
+    <div class="container">
+        <form action="" id="delivery">
+  <div class="form-group row">
+    <label for="Address" class="col-sm-2 col-form-label">Address</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Address" placeholder="Address">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="Pincode" class="col-sm-2 col-form-label">Address</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Pincode" placeholder="Pincode">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="Mobile" class="col-sm-2 col-form-label">Mobile</label>
+    <div class="col-sm-10">
+      <input type="text" class="form-control" id="Mobile" placeholder="Mobile">
+    </div>
+  </div>
+  <input type="text" name="userid" id="" value="{{user._id}}" hidden>
+  <h3> Total Amount : Rs.{{total}}</h3>
+  
+  <fieldset class="form-group">
+    <div class="row">
+      <legend class="col-form-label col-sm-2 pt-0">Payment Methods</legend>
+      <div class="col-sm-10">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="payment-method" id="gridRadios1" value="COD" checked>
+          <label class="form-check-label" for="gridRadios1">
+            COD
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="payment-method" id="gridRadios2" value="ONLINE">
+          <label class="form-check-label" for="gridRadios2">
+            Online Payment
+          </label>
+        </div>
+        
+      </div>
+    </div>
+  </fieldset>
+  <div class="form-group row">
+    {{!-- <div class="col-sm-2">Checkbox</div> --}}
+    <div class="col-sm-10">
+      <div class="form-check">
+        {{!-- <input class="form-check-input" type="checkbox" id="gridCheck1"> --}}
+        {{!-- <label class="form-check-label" for="gridCheck1">
+          Example checkbox
+        </label> --}}
+      </div>
+    </div>
+  </div>
+  <div class="form-group row">
+    <div class="col-sm-10">
+      <button type="submit" class="btn btn-primary">Checkout</button>
+    </div>
+  </div>
+</form>
+    </div>
+</section>
+<script>
+    $('#delivery').submit((e)=>{
+        e.preventDefault()
+        $.ajax({
+            url:'/delivery',
+            method:'post',
+            data:$('#delivery').serialize(),
+            success:(response)=>{
+                alert(response)
+                if(response.status){
+                    location.href='/confirmation'
+                }
+            }
+        })
+    })
+</script>

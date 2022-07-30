@@ -34,28 +34,78 @@ router.get('/', async function(req, res, next) {
   [
      {
       id: 1,
-      name:'biriyani',
-      categoty:"fastfood",
-      image:"https://img.freepik.com/free-photo/indian-chicken-biryani-served-terracotta-bowl-with-yogurt-white-background-selective-focus_466689-72554.jpg?size=626&ext=jpg"
+      name:'Tea',
+      price:'Rs.20',
+      categoty:"Breakfast",
+      image:"https://img.freepik.com/premium-photo/traditional-indian-drink-masala-tea-light-background-with-spices-copy-space_163994-466.jpg?w=900"
     },
     {
       id: 2,
-      name:'cutlate',
-      categoty:"fastfood",
-      image:"https://img.freepik.com/free-photo/bottom-view-chicken-nuggets-lettuce-cherry-tomatoes-cutting-board-dark-table-with-copy-space_140725-112077.jpg?size=626&ext=jpg"
+      name:'Coffee',
+      categoty:"Breakfast",
+      image:"https://img.freepik.com/free-photo/cup-coffee-with-heart-drawn-foam_1286-70.jpg?size=626&ext=jpg"
     },
     {
       id: 3,
-      name:'burger',
-      categoty:"fastfood",
-      image:"https://img.freepik.com/free-photo/front-view-tasty-meat-burger-with-cheese-salad-dark-background_140725-89597.jpg?size=626&ext=jpg"
+      name:'Dosa',
+      categoty:"Breakfast",
+      image:"https://img.freepik.com/premium-photo/masala-dosa-is-south-indian-meal-served-with-sambhar-coconut-chutney-selective-focus_466689-22958.jpg?size=626&ext=jpg"
     },
     {
       id: 4,
-      name:'vada',
-      categoty:"fastfood",
+      name:'Chappathi',
+      categoty:"Breakfast",
+      image:"https://img.freepik.com/free-photo/indian-tasty-roti-composition_23-2149073358.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 5,
+      name:'Biriyani',
+      categoty:"Lunch",
       image:"https://img.freepik.com/free-photo/indian-chicken-biryani-served-terracotta-bowl-with-yogurt-white-background-selective-focus_466689-72554.jpg?size=626&ext=jpg"
     },
+    {
+      id: 6,
+      name:'Veg Meals',
+      categoty:"Lunch",
+      image:"https://img.freepik.com/free-photo/sambar-rice-sambar-sadam-one-pot-meal-from-south-indian-state-tamil-nadu-kerala_466689-75220.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 7,
+      name:'Porotta',
+      categoty:"Lunch",
+      image:"https://img.freepik.com/premium-photo/porotta-paratha-layered-flat-bread-made-using-all-purpose-wheat-flour-arranged-wooden-base_527904-3572.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 8,
+      name:'Roti',
+      categoty:"Lunch",
+      image:"https://img.freepik.com/premium-photo/indian-cuisine-tandoori-roti-wooden-background_55610-461.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 9,
+      name:'Mango Juice',
+      categoty:"Juice",
+      image:"https://img.freepik.com/free-photo/mango-juice-wooden-floor-table_1150-9676.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 10,
+      name:'Pappya Juice',
+      categoty:"Juice",
+      image:"https://img.freepik.com/free-photo/glass-papaya-juice-put-white-marble-floor_1150-28077.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 11,
+      name:'Orange Juice',
+      categoty:"Juice",
+      image:"https://img.freepik.com/free-photo/fresh-orange-juice-glass-dark-background_1150-45560.jpg?size=626&ext=jpg"
+    },
+    {
+      id: 12,
+      name:'Apple Juice',
+      categoty:"Juice",
+      image:"https://img.freepik.com/free-photo/side-view-apple-juice-with-red-apples-white-wooden-table_176474-1044.jpg?size=626&ext=jpg"
+    },
+    
    
 
   ]
@@ -106,8 +156,9 @@ router.get('/cart',verifylogin,async(req,res)=>
 {
 
   let product=await userhelpers.getCartProducts(req.session.user._id)
-  console.log(product)
-   res.render('partials/cart',{product})
+  //console.log(product)
+  let totalValue= await userhelpers.getTotalAmount(req.session.user._id)
+   res.render('partials/cart',{product,totalValue})
 })
 router.get('/add-to-cart/:id',async (req,res)=>{
   console.log("api call")
@@ -124,11 +175,48 @@ router.get('/add-to-cart/:id',async (req,res)=>{
 res.json({res:true})
    
 })
-router.post('/change-product-quantity/',(req,res,next)=>{
+router.post('/change-product-quantity',async(req,res,next)=>{
   console.log(req.body)
-  userhelpers.changeProductQuantity(req.body).then(()=>{
-
+ await userhelpers.changeProductQuantity(req.body).then((response)=>{
+   res.json(response)
   })
+})
+router.get('/delivery',verifylogin,async (req,res)=>
+{
+let total=await userhelpers.getTotalAmount(req.session.user._id)
+
+  res.render('partials/delivery',{total,user:req.session.user})
+})
+router.post('/delivery',async (req,res)=>{
+  let products=await userhelpers.getCartProductList(req.body.userid)
+  let totalprice=await userhelpers.getTotalAmount(req.body.userid)
+userhelpers.placeOrder(req.body,products,totalprice).then((orderid)=>{
+  console.log(orderid)
+  if(req.body['payment-method']=='COD'){
+    res.json({status:true})
+  }
+  else{
+userhelpers.generateRazorPay(orderid,totalprice).then((response)=>{
+  res.json(response)
+})
+  }
+
+})
+
+  const obj = JSON.parse(JSON.stringify(req.body));
+  console.log(obj)
+})
+router.get('/confirmation',(req,res)=>
+{
+  res.render('partials/confirmation',{user:req.session.user})
+})
+router.get('/orders',async(req,res)=>{
+  let orders=await userhelpers.getUserOrders(req.session.userid)
+  res.render('partials/orders',{user:req.session.user,orders})
+})
+router.get('/view-orders-products/:id',async(req,res)=>{
+  let products=await userhelpers.getOrderProducts(req.params.id)
+  res.render('partials/view-order-products',{user:req.session.user,products})
 })
 
 module.exports = router;

@@ -5,17 +5,20 @@
                 <tr>
                     <th>item</th>
                      <th>Title</th>
+                     <th>Price</th>
                       <th>Quantity</th>
+
                 </tr>
             </thead>
             <tbody>
 
                 {{#each product}}
                 <tr>
-                    
+                     
                     <td><img style="width: 70px;height:70px" src="https://img.freepik.com/free-photo/bottom-view-chicken-nuggets-lettuce-cherry-tomatoes-cutting-board-dark-table-with-copy-space_140725-112077.jpg?size=626&ext=jpg"></td>
                     <td>{{this.product.Name}}</td>
-                    
+                    <td>{{this.product.Price}}</td>
+                     
                     <td>
                         <button class="cart-item-count mr-3" onclick="changeQuantity('{{this.id}}','{{this.product._id}}',-1)">-</button>{{this.quantity}}<button class="cart-item-count ml-3" onclick="changeQuantity('{{this.id}}','{{this.product._id}}',1)">+</button>
                     </td>
@@ -27,22 +30,33 @@
             </tbody>
 
         </table>
+         <hr>
+         <h3 class="float-right mr-5 mt-4">Total: RS.<span id="total">{{totalValue}}</span></h3>
+         <a href="/delivery" class="float-right btn btn-success mt-75 mr-10">Place Order</a>
     </div>
 </section>
 <script>
     function changeQuantity(cart_id,product_id,count){
+        quantity=parseInt(document.getElementById(product_id).innerHTML)
+        count=parseInt(count)
+        console.log("entered change quantity")
         $.ajax({
             url:'/change-product-quantity',
             data:{
                 cart:cart_id,
                 product:product_id,
                 count:count
+                quantity:quantity
             },
             method:'post',
             success:(response)=>{
-                alert(response)
+                if(response.removeProduct){
+                    alert("product removed")
+                    location.reload()
+                }
+                else{
+                    document.getElementById(product_id).innerHTML=quantity+count
+                }
             }
         })
     }
-
-</script>

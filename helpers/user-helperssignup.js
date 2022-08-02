@@ -6,7 +6,8 @@ const  promptSimShell  = require("readline-sync");
 const  loginUser  = require("../config/collection");
 const { Collection } = require("mongo");
 const { response } = require("../app");
-const Razorpay=require('razorpay')
+const Razorpay=require('razorpay');
+const { reset } = require("nodemon");
 var objectid=require('mongodb').ObjectId
 var instance = new Razorpay({
   key_id: 'rzp_test_vAkOwzK2HBW8V3',
@@ -69,6 +70,7 @@ module.exports = {
     })
  },
   addtoCart:(product_id,user_id)=>{
+   //console.log("count is"+count)
    let productObject={
     item:product_id,
     quantity:1
@@ -147,7 +149,7 @@ module.exports = {
       }
 
     ]).toArray()
-    // console.log(cartItems[0].product)
+     console.log(cartItems)
     //  console.log(productObject)
    resolve(cartItems)
 
@@ -163,35 +165,66 @@ module.exports = {
       count=cart.products.length
       //console.log("enterd here for cart length")
     }
+    console.log(count)
     resolve(count)
   })
  },
-  changeProductQuantity:(details)=>{
-  details.count=parseInt(details.count)
-  details.quantity=parseInt(details.quantity)
+//  deleteCartProduct:(product_id)=>
+//  {
+//   console.log("product id"+product_id)
+//      return new Promise((resolve,reject)=>
+//      {
+//          db.get().collection(collection.CART_COLLECTION).deleteOne({id:product_id}).then((response)=>
+//          {
+//              console.log(response)
+//              resolve(response);
+//          }
+//          )
+//      })
+//  },
 
-  return new Promise((resolve,reject)=>{
-    if(details.count==-1 && details.quantity==1){
-    db.get().collection(collection.CART_COLLECTION)
-    .updateOne({_id:details.cart},
-    {
-      $pull:{products:{item:details.product}}
-    }
-    ).then((response)=>{
-      resolve({removeProduct:true})
-    })}else{
-      db.get().collection(collection.CART_COLLECTION).updateOne({id:details.cart,'products.item':details.product},
-      {
-        $inc:{'product.$.quantity':details.count}
-      }
-      ).then((response)=>
-      {
-        resolve(true)
+ changeProductQuantity:(details)=>{
+  console.log(details.cart)
+  console.log(details.product)
+  console.log(details.count)
+      details.count=parseInt(details.count)
+      return new Promise((resolve,reject)=>{
+        db.get().collection(collection.CART_COLLECTION)
+        .updateOne({_id:objectid(details.cart),'products.item':details.product},
+        {
+          $inc:{'products.$.quantity':details.count}
+        }
+        ).then(()=>{
+          resolve()
+        })
       })
-    }
-  })
-
  },
+ deleteCartProduct:(details)=>{
+  console.log(details.product)
+  console.log(details.cart)
+  //details.count=parseInt(details.count)
+      return new Promise((resolve,reject)=>{
+
+        
+        db.get().collection(collection.CART_COLLECTION)
+        .updateOne(
+          { _id: objectid(details.cart) },
+
+          { $pull:
+             { 
+              products:
+             {
+               item: details.product
+              } 
+              } 
+            },
+        
+        ).then(()=>{
+          resolve()
+        })
+      })
+ },
+
  getTotalAmount:(user_id)=>{
     
   return new Promise(async(resolve,reject)=>{
@@ -258,31 +291,44 @@ module.exports = {
       }
       db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObject).then((response)=>{
             db.get().collection(collection.CART_COLLECTION).deleteOne({user:order.userid})
-           // console.log(response.ops[0].id)
-          resolve(response)
+           //console.log(order.userid)
+          resolve(order.userid)
       })
    })
  },
+ getAllproducts:()=>{
+  return new Promise(async(resolve,reject)=>
+  {
+      let products=await db.get().collection(collection.PRODUCT_COLLECTION).find().toArray()
+      resolve(products)
+  })
+},
  getCartProductList:(userid)=>{
    return new Promise(async(resolve,reject)=>{
     let cart =await db.get().collection(collection.CART_COLLECTION).findOne({user:userid})
-    console.log(cart)
+    //console.log(cart)
     resolve(cart.products)
    })
  },
- getUserOrders:(user_id)=>
+ getUserOrders:(userid)=>
  {
+  //console.log("useeridin guo" + userid)
   return new Promise(async(resolve,reject)=>{
-    let orders=await db.get().collection(collection.ORDER_COLLECTION).find({user:user_id}).toArray()
-    console.log(orders);
+    let orders=await db.get().collection(collection.ORDER_COLLECTION).find({userid}).toArray()
+   // console.log(orders);
     resolve(orders)
   })
  },
- getOrderProducts:(userid)=>{
+ 
+
+ getOrderProducts:(orderid)=>{
+  console.log(orderid)
   return new Promise(async(resolve,reject)=>{
-    let orderItems=await db.get().collection(collection.CART_COLLECTION).aggregate([
+    let orderItems=await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+     //console.log('gop'+orderid),
       {
-        $match:{id:orderid}
+        
+        $match:{_id:objectid(orderid)}
       },
       {
         $unwind:'$products'
@@ -295,7 +341,7 @@ module.exports = {
       },
       {
         $lookup:{
-          from:PRODUCT_COLLECTION,
+          from:collection.PRODUCT_COLLECTION,
           localField:'item',
           foreignField:'id',
           as:'product'
@@ -311,31 +357,33 @@ module.exports = {
       }
 
     ]).toArray()
+     //console.log(orderid),
     // console.log(cartItems[0].product)
-    //  console.log(productObject)
+     console.log(orderItems)
    resolve(orderItems)
 
   })
  
+//  },
+//  generateRazorPay:(orderid,total)=>{
+//   //console.log("total",total)
+//   return new Promise((resolve,reject)=>{
+//    var options={
+//     amount:total,
+//     currency:'INR',
+//     reciept:"order"+orderid
+//    };
+//    instance.orders.create(options,function(err,order){
+//     if(err){
+//       console.log(err)
+//     }
+//     console.log("new order:",order)
+//     resolve(order)
+//    })
+//   })
+//  }
+
  },
- generateRazorPay:(orderid,total)=>{
-  console.log("total",total)
-  return new Promise((resolve,reject)=>{
-   var options={
-    amount:total,
-    currency:'INR',
-    //reciept:'order_2222'
-   };
-   instance.orders.create(options,function(err,order){
-    if(err){
-      console.log(err)
-    }
-    console.log("new order:",order)
-    resolve(order)
-   })
-  })
- }
-
- }
  
-
+ 
+}

@@ -13,31 +13,6 @@ producthelpers.getAllproducts().then((products)=>
 
 
 
-//    let products=
-//    [
-//     {
-//      name:'biriyani',
-//      categoty:"fastfood",
-//      image:"https://img.freepik.com/free-photo/indian-chicken-biryani-served-terracotta-bowl-with-yogurt-white-background-selective-focus_466689-72554.jpg?size=626&ext=jpg"
-//    },
-//    {
-//      name:'cutlate',
-//      categoty:"fastfood",
-//      image:"https://img.freepik.com/free-photo/bottom-view-chicken-nuggets-lettuce-cherry-tomatoes-cutting-board-dark-table-with-copy-space_140725-112077.jpg?size=626&ext=jpg"
-//    },
-//    {
-//      name:'burger',
-//      categoty:"fastfood",
-//      image:"https://img.freepik.com/free-photo/front-view-tasty-meat-burger-with-cheese-salad-dark-background_140725-89597.jpg?size=626&ext=jpg"
-//    },
-//    {
-//      name:'vada',
-//      categoty:"fastfood",
-//      image:"https://img.freepik.com/free-photo/indian-chicken-biryani-served-terracotta-bowl-with-yogurt-white-background-selective-focus_466689-72554.jpg?size=626&ext=jpg"
-//    },
-  
-
-//  ]
 
 
 });
@@ -46,11 +21,11 @@ router.get('/add-product',function(req,res)
   res.render('admin/add-product')
 })
 router.post('/add-product',function(req,res){
-  console.log(req.body);
+  //console.log(req.body);
   console.log(req.files.image);
   producthelpers.addproduct(req.body,(body)=>
   {
-    res.render('admin/add-product')
+    res.render('admin/add-product',{admin:true})
   })
 })
 router.get('/delete-product/:id',(req,res)=>
@@ -73,7 +48,12 @@ router.post('/edit-product/:id',(req,res)=>
      res.redirect('/admin')
   })
 })
-
+router.get('/orderinfo',async(req,res)=>{
+  //console.log(user)
+  let orders=await producthelpers.getAdminAllOrders(req.user)
+  //console.log('userid in orders'+ req.session.user._id)
+  res.render('admin/order-info',{user:req.user,orders,admin:true})
+})
 
 
 module.exports = router;

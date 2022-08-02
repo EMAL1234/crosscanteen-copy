@@ -14,7 +14,8 @@
   <body>
     <header>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
-  <a class="navbar-brand" href="/">Can-Auto-User</a>
+  <a class="navbar-brand" href="/">CanAuto</a>
+  
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo02" aria-controls="navbarTogglerDemo02" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -27,9 +28,20 @@
       <li class="nav-item"> 
         <a class="nav-link" href="/cart">Cart <span class="badge badge-success" id="cart-count">{{cartCount}}</span></a>
       </li>
+      <li class="nav-item active">
+        <a class="nav-link" href="/orders">Orders</a>
+      </li>
+       {{#if user}}
+   {{!-- {{ user.Name}}
+   {{else}}
+  
+   {{/if}} --}}
       
       <li class="nav-item">
-        <a class="nav-link" href="#">Orders</a>
+        <a class="nav-link" href="/"> {{ user.Name}}
+   {{else}}
+  ‎
+   {{/if}}</a>
       </li>
       
      
@@ -38,11 +50,7 @@
       </li> --}}
     </ul>
    <a class="btn btn-primary" href="/login" role="button">Login</a>
-   {{#if user}}
-   {{user.Name}}
-   {{else}}
-   login
-   {{/if}}
+  
   </div>
 </nav>
     </header>

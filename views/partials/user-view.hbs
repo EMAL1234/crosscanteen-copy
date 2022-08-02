@@ -3,13 +3,13 @@
         <div class="row">
             {{#each products}}
             <div class="col-md-3">
-                <div class="card" style="width: 18rem; height:45ex",>
-  <img class="card-img-top" src="{{this.image}}" style="height: 30rem;" alt="Card image cap">
+                <div class="card" style="width: 18rem; height:25ex",>
+  {{!-- <img class="card-img-top" src="{{this.image}}" style="height: 30rem;" alt="Card image cap"> --}}
   <div class="card-body">
-    <h5 class="card-title">{{this.name}}</h5>
+    <h5 class="card-title">{{this.Name}}</h5>
     {{!-- <p class="card-text1">{{this.Description}}</p> --}}
-    <p class="card-text">{{this.price}}</p>
-    
+    <p class="card-text">Rs.{{this.Price}}</p>
+    <p class="card-text">Count:{{this.Count}}</p>
 
   
     

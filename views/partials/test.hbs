@@ -1,0 +1,25 @@
+<section>
+    <h1></h1>
+    <div class="container ml-5">
+        <div class="row">
+            {{#each products}}
+            
+                <div class="col-md-3">
+                    <div class="card">
+                        {{!-- <img src="#" alt="hlo" class="card-image-top"> --}}
+                        <div class="card-body">
+                            <h5 class="card-title">{{this.product.Name}}</h5>
+                            <p class="card-text">Rs.{{this.product.Price}}</p>
+                            <p class="card-text">Quantity ordered:{{this.quantity}}</p>
+                           
+                        </div>
+                    </div>
+                </div>
+
+
+            {{/each}}
+
+        </div>
+        <a href="/orders" class=" btn btn-success mt-5 mr-1 float-right">Go Back</a>
+    </div>
+</section> 

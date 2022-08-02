@@ -50,7 +50,8 @@ module.exports={
                 Name:product_details.Name,
                 Description:product_details.Description,
                 Price:product_details.Price,
-                Category:product_details.Category
+                Category:product_details.Category,
+                Count:product_details.Count
 
               }  
             }
@@ -59,6 +60,16 @@ module.exports={
                 resolve()
             })
         })
-    }
+    },
+ getAdminAllOrders:(user)=>
+ {
+  
+  return new Promise(async(resolve,reject)=>{
+    let orders=await db.get().collection(collection.ORDER_COLLECTION).find({user}).toArray()
+   // console.log(orders);
+    resolve(orders)
+  })
+ },
+    
 
 }

@@ -1,25 +1,31 @@
 <section>
     <div class="container">
       <div class="row mt-4">
-        <a href="/admin/add-product/" class="btn btn-success ml-auto">Add Products</a>
+        {{!-- <a href="/admin/add-product/" class="btn btn-success ml-auto">Add Products</a> --}}
       </div>
-        <table class="table mt-5">
+        <table class="table mt-5" id="productstable">
   <thead>
     <tr>
-      <th scope="col">No</th>
+      <th scope="col">id</th>
+      {{!-- <th scope="col">No</th> --}}
       <th scope="col">Title</th>
       <th scope="col">Category</th>
+      <th scope="col">Count</th>
       {{!-- <th scope="col">Description</th> --}}
-      <th>image</th>
+      {{!-- <th>image</th> --}}
+      <th>options</th>
     </tr>
   </thead>   
   <tbody>
     {{#each products}}
     <tr>
-      <th scope="row">1</th>
+      
+      <td>{{this.id}}</td>
+      {{!-- <th scope="row">{{this.id}}</th> --}}
       <td>{{this.Name}}</td>
       <td>{{this.Category}}</td>
-      <td><img style="width: 50px;height: 50px;" src="{{this.image}}" alt=""></td>
+      <td>{{this.Count}}</td>
+      {{!-- <td><img style="width: 50px;height: 50px;" src="{{this.image}}" alt=""></td> --}}
       <td>
         <a href="/admin/edit-product/{{this._id}}" class="btn btn-primary">Edit</a>
         <a href="/admin/delete-product/{{this._id}}" class="btn btn-danger" onclick="return confirm('Delete this {{this.name}}')">Delete</a>
@@ -32,3 +38,8 @@
 </table>
     </div>
 </section>
+<script>
+  $(document).ready( function () {
+    $('#productstable').DataTable();
+} );
+</script>

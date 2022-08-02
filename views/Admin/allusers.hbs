@@ -3,25 +3,27 @@
         <table class="table mt-5">
             <thead>
                 <tr>
-                    <th>date</th>
-                     <th>TotalAmount</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                     {{!-- <th>TotalAmount</th>
                      <th>PaymentMethod</th>
-                     <th>Status</th>
+                     <th>Status</th> --}}
                       
 
                 </tr>
             </thead>
             <tbody>
 
-                {{#each orders}}
+                {{#each user}}
                 <tr>
-                     <td>{{this.date}}</td>
+                    <td>{{this.Name}}</td>
+                     <td>{{this.Email}}</td>
                      <td>{{this.totalAmount}}</td>
                      <td>{{this.paymentMethod}}</td>
                      {{!-- <td>{{this.deliveryDetails.adddress}}</td> --}}
                      <td>{{this.status}}</td>
                      <td>
-                        <a href="/test/{{this._id}}" class="btn btn-primary">Products</a>
+                        <a href="#" class="btn btn-success">Verify</a>
 
                      </td>
                 </tr>
@@ -31,6 +33,6 @@
         </table>
          <hr>
          {{!-- <h3 class="float-right mr-5 mt-4">Total: RS.<span id="total">{{totalValue}}</span></h3> --}}
-         <a href="/" class="float-right btn btn-success mt-5 mr-30">Continue Shopping</a>
+         {{!-- <a href="#" class="float-right btn btn-success mt-5 mr-30">Continue Shopping</a> --}}
     </div>
 </section>

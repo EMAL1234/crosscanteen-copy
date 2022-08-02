@@ -1,13 +1,16 @@
 <div class="row">
     <div class="col-md-6 m-auto">
         <div class="container mt-5 pl-5">
+          <div class="image">
+          {{!-- <img  class="center" src="https://icons-for-free.com/download-icon-complete+done+green+success+valid+icon-1320183462969251652_256.ico" height="110px" width="110px"> --}}
+          </div>
             <h2 class="text-center">Login</h2>
             <form action="/login" method="POST">
               {{#if loginError}}
 
               <p class="error">Invalid details</p>
               {{/if}}
-
+    
   <div class="form-group">
     <label>Email address</label>
     <input type="email" class="form-control" name="Email"  placeholder="Enter email">

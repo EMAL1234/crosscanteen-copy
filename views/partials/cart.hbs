@@ -4,8 +4,10 @@
             <thead>
                 <tr>
                     <th>item</th>
-                     <th>Title</th>
+                     {{!-- <th>Title</th> --}}
                      <th>Price</th>
+                     <th>Description</th>
+
                       <th>Quantity</th>
 
                 </tr>
@@ -15,15 +17,17 @@
                 {{#each product}}
                 <tr>
                      
-                    <td><img style="width: 70px;height:70px" src="https://img.freepik.com/free-photo/bottom-view-chicken-nuggets-lettuce-cherry-tomatoes-cutting-board-dark-table-with-copy-space_140725-112077.jpg?size=626&ext=jpg"></td>
-                    <td>{{this.product.Name}}</td>
+                    {{!-- <td><img style="width: 70px;height:70px" src="https://img.freepik.com/free-photo/bottom-view-chicken-nuggets-lettuce-cherry-tomatoes-cutting-board-dark-table-with-copy-space_140725-112077.jpg?size=626&ext=jpg"></td> --}}
+                    <td>{{this.product.Name}}</tdviews/partials/cart.hbs>
                     <td>{{this.product.Price}}</td>
+                    <td>{{this.product.Description}}</td>
+
                      
                     <td>
-                        <button class="cart-item-count mr-3" onclick="changeQuantity('{{this.id}}','{{this.product._id}}',-1)">-</button>{{this.quantity}}<button class="cart-item-count ml-3" onclick="changeQuantity('{{this.id}}','{{this.product._id}}',1)">+</button>
+                        <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{product.id}}',-1);quan();">-</button> {{this.quantity}} <button class="cart-item-count mr-3" onclick="changeQuantity('{{this._id}}','{{product.id}}',1)">+</button>
                     </td>
                     <td>
-                        <a href="" class="btn btn-danger">Remove</a>
+                        <button class="cart-item-count mr-3" onclick="deleteCartProduct('{{this._id}}','{{product.id}}',)">Delete</button>
                     </td>
                 </tr>
                 {{/each}}
@@ -32,31 +36,39 @@
         </table>
          <hr>
          <h3 class="float-right mr-5 mt-4">Total: RS.<span id="total">{{totalValue}}</span></h3>
-         <a href="/delivery" class="float-right btn btn-success mt-75 mr-10">Place Order</a>
+         <a href="/delivery" class=" btn btn-success mt-5 mr-1 float-right" style="width: 100%;" >Place Order</a>
     </div>
 </section>
 <script>
-    function changeQuantity(cart_id,product_id,count){
-        quantity=parseInt(document.getElementById(product_id).innerHTML)
-        count=parseInt(count)
-        console.log("entered change quantity")
-        $.ajax({
-            url:'/change-product-quantity',
+    function changeQuantity(cart_id,product_id,count) 
+    {
+       $.ajax({
+            url:'changeQuantity',
             data:{
                 cart:cart_id,
                 product:product_id,
                 count:count
-                quantity:quantity
             },
             method:'post',
             success:(response)=>{
-                if(response.removeProduct){
-                    alert("product removed")
-                    location.reload()
-                }
-                else{
-                    document.getElementById(product_id).innerHTML=quantity+count
-                }
+                alert(response)
             }
         })
     }
+    
+function deleteCartProduct(cart_id,product_id){
+        $.ajax({
+            url:'deleteCartProduct',
+            data:{
+                cart:cart_id,
+                product:product_id
+            },
+            method:'post',
+            success:(response)=>{
+                alert(response)
+            }
+        })
+    }
+
+
+</script>
